@@ -47,7 +47,7 @@ export default function Login() {
 
   // Handle NextAuth errors
   useEffect(() => {
-    const error = searchParams.get("error");
+    const error = searchParams?.get("error");
     if (error === "Verification") {
       toast.error("Email verification failed. Please try signing in again or request a new verification email.");
     } else if (error) {
