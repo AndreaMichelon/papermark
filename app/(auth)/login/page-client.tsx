@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { signInWithPasskey } from "@teamhanko/passkeys-next-auth-provider/client";
 import { signIn } from "next-auth/react";
@@ -23,6 +23,7 @@ import { Label } from "@/components/ui/label";
 
 export default function Login() {
   const { next } = useParams as { next?: string };
+  const searchParams = useSearchParams();
 
   const [lastUsed, setLastUsed] = useLastUsed();
   const authMethods = ["google", "email", "linkedin", "passkey"] as const;
@@ -43,6 +44,16 @@ export default function Login() {
     .email({ message: "Please enter a valid email." });
 
   const emailValidation = emailSchema.safeParse(email);
+
+  // Handle NextAuth errors
+  useEffect(() => {
+    const error = searchParams.get("error");
+    if (error === "Verification") {
+      toast.error("Email verification failed. Please try signing in again or request a new verification email.");
+    } else if (error) {
+      toast.error(`Authentication error: ${error}`);
+    }
+  }, [searchParams]);
 
   return (
     <div className="flex h-screen w-full flex-wrap">

@@ -81,6 +81,15 @@ export const authOptions: NextAuthOptions = {
           finalUrl = urlObj.toString();
         }
 
+        // Log the verification URL for debugging
+        console.log("[Email Verification]", {
+          identifier,
+          originalUrl: url,
+          finalUrl,
+          hasValidNextAuthUrl,
+          nextAuthUrl: process.env.NEXTAUTH_URL,
+        });
+
         if (process.env.NODE_ENV === "development") {
           const checksum = generateChecksum(finalUrl);
           const verificationUrlParams = new URLSearchParams({
@@ -199,23 +208,27 @@ const getAuthOptions = (req: NextApiRequest): NextAuthOptions => {
     callbacks: {
       ...authOptions.callbacks,
       signIn: async ({ user, account }) => {
-        if (!user.email || (await isBlacklistedEmail(user.email))) {
-          await identifyUser(user.email ?? user.id);
-          await trackAnalytics({
-            event: "User Sign In Attempted",
-            email: user.email ?? undefined,
-            userId: user.id,
-          });
-          return false;
-        }
-
-        // Skip rate limiting for email verification to prevent redirect loops
-        if (account?.provider === "email") {
-          return true;
-        }
-
-        // Apply rate limiting for other signin attempts (Google, LinkedIn, etc.)
         try {
+          if (!user.email || (await isBlacklistedEmail(user.email))) {
+            await identifyUser(user.email ?? user.id);
+            await trackAnalytics({
+              event: "User Sign In Attempted",
+              email: user.email ?? undefined,
+              userId: user.id,
+            });
+            return false;
+          }
+
+          // Skip rate limiting for email verification to prevent redirect loops
+          if (account?.provider === "email") {
+            log({
+              message: `Email verification attempt for ${user.email}`,
+              type: "info",
+            });
+            return true;
+          }
+
+          // Apply rate limiting for other signin attempts (Google, LinkedIn, etc.)
           if (req) {
             const clientIP = getIpAddress(req.headers);
             const rateLimitResult = await checkRateLimit(
@@ -231,9 +244,15 @@ const getAuthOptions = (req: NextApiRequest): NextAuthOptions => {
               return false; // Block the signin
             }
           }
-        } catch (error) {}
 
-        return true;
+          return true;
+        } catch (error) {
+          log({
+            message: `SignIn callback error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            type: "error",
+          });
+          return false;
+        }
       },
     },
     events: {
