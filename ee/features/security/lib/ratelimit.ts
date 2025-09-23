@@ -9,7 +9,7 @@ export const rateLimiters = {
   // 3 auth attempts per hour per IP
   auth: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(3, "20 m"),
+    limiter: Ratelimit.slidingWindow(10, "20 m"),
     prefix: "rl:auth",
     enableProtection: true,
     analytics: true,
