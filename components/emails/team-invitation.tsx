@@ -19,7 +19,7 @@ export default function TeamInvitation({
   senderName,
   senderEmail,
   teamName,
-  url = "https://app.papermark.com",
+  url = "https://app.dataroom.europastudios.it",
 }: {
   senderName: string;
   senderEmail: string;

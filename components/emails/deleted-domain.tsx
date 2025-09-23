@@ -16,7 +16,7 @@ import {
 import { Footer } from "./shared/footer";
 
 export default function DomainDeleted({
-  domain = "papermark.com",
+  domain = "dataroom.europastudios.it",
 }: {
   domain: string;
 }) {
@@ -45,7 +45,7 @@ export default function DomainDeleted({
             <Section className="my-8 text-center">
               <Button
                 className="rounded bg-black text-center text-xs font-semibold text-white no-underline"
-                href={`https://app.papermark.com/settings/domains`}
+                href={`https://app.dataroom.europastudios.it/settings/domains`}
                 style={{ padding: "12px 20px" }}
               >
                 Set up your custom domain

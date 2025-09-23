@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       where: {
         slug: {
           not: {
-            in: ["dataroom.europastudios.it", "papermark.com"],
+            in: ["dataroom.europastudios.it", "dataroom.europastudios.it"],
           },
         },
       },

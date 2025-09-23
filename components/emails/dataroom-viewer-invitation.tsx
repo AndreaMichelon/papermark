@@ -18,7 +18,7 @@ import { Footer } from "./shared/footer";
 export default function DataroomViewerInvitation({
   dataroomName = "Example Data Room",
   senderEmail = "sender@example.com",
-  url = "https://app.papermark.com/datarooms/123",
+  url = "https://app.dataroom.europastudios.it/datarooms/123",
 }: {
   dataroomName: string;
   senderEmail: string;

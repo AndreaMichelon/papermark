@@ -174,8 +174,8 @@ function prepareRemotePatterns() {
     // papermark img
     { protocol: "https", hostname: "www.dataroom.europastudios.it" },
     { protocol: "https", hostname: "app.dataroom.europastudios.it" },
-    { protocol: "https", hostname: "www.papermark.com" },
-    { protocol: "https", hostname: "app.papermark.com" },
+    { protocol: "https", hostname: "www.dataroom.europastudios.it" },
+    { protocol: "https", hostname: "app.dataroom.europastudios.it" },
     // useragent img
     { protocol: "https", hostname: "faisalman.github.io" },
     // special document pages

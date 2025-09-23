@@ -22,12 +22,12 @@ function isAnalyticsPath(path: string) {
 function isCustomDomain(host: string) {
   return (
     (process.env.NODE_ENV === "development" &&
-      (host?.includes(".local") || host?.includes("papermark.dev"))) ||
+      (host?.includes(".local") || host?.includes("dataroom.europastudios.it"))) ||
     (process.env.NODE_ENV !== "development" &&
       !(
         host?.includes("localhost") ||
         host?.includes("dataroom.europastudios.it") ||
-        host?.includes("papermark.com") ||
+        host?.includes("dataroom.europastudios.it") ||
         host?.endsWith(".vercel.app")
       ))
   );
