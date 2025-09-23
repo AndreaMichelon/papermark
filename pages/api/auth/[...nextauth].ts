@@ -198,7 +198,7 @@ const getAuthOptions = (req: NextApiRequest): NextAuthOptions => {
     ...authOptions,
     callbacks: {
       ...authOptions.callbacks,
-      signIn: async ({ user }) => {
+      signIn: async ({ user, account }) => {
         if (!user.email || (await isBlacklistedEmail(user.email))) {
           await identifyUser(user.email ?? user.id);
           await trackAnalytics({
@@ -209,7 +209,12 @@ const getAuthOptions = (req: NextApiRequest): NextAuthOptions => {
           return false;
         }
 
-        // Apply rate limiting for signin attempts
+        // Skip rate limiting for email verification to prevent redirect loops
+        if (account?.provider === "email") {
+          return true;
+        }
+
+        // Apply rate limiting for other signin attempts (Google, LinkedIn, etc.)
         try {
           if (req) {
             const clientIP = getIpAddress(req.headers);
