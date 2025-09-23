@@ -315,12 +315,28 @@ export const documentUploadSchema = z
         // S3_PATH should use file paths, not URLs
         return !data.url.startsWith("https://");
       } else if (data.storageType === "VERCEL_BLOB") {
-        // VERCEL_BLOB can use either Notion URLs or S3 paths (for migration)
+        // VERCEL_BLOB can use Notion URLs, S3 paths (for migration), or actual Vercel blob URLs
         if (data.url.startsWith("https://")) {
-          // Must be a Notion URL for VERCEL_BLOB
           try {
             const urlObj = new URL(data.url);
             const hostname = urlObj.hostname;
+            
+            // Check if it's a Vercel blob URL
+            let isVercelBlob = false;
+            if (process.env.VERCEL_BLOB_HOST) {
+              isVercelBlob = hostname.startsWith(process.env.VERCEL_BLOB_HOST);
+            }
+            
+            // Also check for known Vercel blob patterns
+            if (!isVercelBlob) {
+              isVercelBlob = hostname.includes('.public.blob.vercel-storage.com');
+            }
+            
+            if (isVercelBlob) {
+              return true;
+            }
+            
+            // Check if it's a Notion URL
             const isStandardNotion =
               hostname === "www.notion.so" ||
               hostname === "notion.so" ||
